@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List
 
+
 class MinioS3ObjectRecord(BaseModel):
     key: str
     size: int
@@ -28,4 +29,3 @@ class MinioEvent(BaseModel):
     EventName: str
     Key: str
     Records: List[MinioEventRecord]
-
