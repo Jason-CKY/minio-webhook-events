@@ -8,10 +8,11 @@ services:
       target: dev
     environment:
       log_level: DEBUG
-      S3_HOST: http://minio:9000
+      S3_HOST: minio:9000
       S3_USERNAME: minioadmin
       S3_PASSWORD: minioadmin
       S3_BUCKET_NAME: events
+      S3_SUCCESS_BUCKET_NAME: success
     ports:
       - "8000:8000"
     volumes:

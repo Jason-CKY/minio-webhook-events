@@ -1,11 +1,14 @@
 from pathlib import Path
+from loguru import logger
 from fastapi import FastAPI
+from minio.commonconfig import CopySource
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
+
 from app.schemas.events import MinioEvent
 from app.config.settings import settings
-from loguru import logger
+from app.config.s3 import client
 
 
 app = FastAPI(
@@ -43,8 +46,14 @@ def healthcheck():
 
 
 @app.post("/minio/webhook")
-async def webhook(request: MinioEvent):
-    logger.critical(request.model_dump_json(indent=4))
+def webhook(request: MinioEvent):
+    for record in request.Records:
+        client.copy_object(
+            settings.s3_success_bucket_name,
+            object_name=record.s3.object.key,
+            source=CopySource(record.s3.bucket.name, record.s3.object.key),
+        )
+        client.remove_object(record.s3.bucket.name, record.s3.object.key)
     return {"message": "received"}
 
 

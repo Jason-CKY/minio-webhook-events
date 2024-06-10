@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     s3_host: str = os.getenv("S3_HOST", "localhost:9000")
     s3_verify_server_cert: bool = os.getenv("S3_VERIFY_SERVER_CERT", "false").lower() == "true"
     s3_bucket_name: str = os.getenv("S3_BUCKET_NAME", "events")
+    s3_success_bucket_name: str = os.getenv("S3_SUCCESS_BUCKET_NAME", "success")
 
     swagger_js_url: str = os.getenv(
         "SWAGGER_JS_URL",
