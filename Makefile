@@ -5,6 +5,26 @@
 help:			## Help command
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
+.PHONY: black-lint
+lint:			## Run Black Linter, then exit with an error code if needed
+	docker run --rm			\
+		-v $(PWD)/src/app:/src:Z	\
+		--workdir=/src						\
+		pyfound/black:latest_release		\
+	black --line-length 120 --diff .		
+	docker run --rm			\
+		-v $(PWD)/src/app:/src:Z	\
+		--workdir=/src						\
+		pyfound/black:latest_release		\
+	black --line-length 120 --check .
+
+.PHONY: black-format
+format:		## Run Black Formatter
+	docker run --rm			\
+		-v $(PWD)/src/app:/src:Z	\
+		--workdir=/src						\
+		pyfound/black:latest_release		\
+	black --line-length 120 .
 
 .PHONY: build-dev
 build-dev:	build-dev	## rebuild all the images in the docker-compose file
