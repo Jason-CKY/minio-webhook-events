@@ -41,6 +41,8 @@ services:
         mc alias set minio1 http://minio:9000 minioadmin minioadmin
         mc alias ls
         mc mb minio1/events
+        mc mb minio1/success
+        mc mb minio1/failure
         mc admin config set minio1/ notify_webhook:service \
           endpoint="http://api:8000/minio/webhook" \
           queue_dir="/queue" \
