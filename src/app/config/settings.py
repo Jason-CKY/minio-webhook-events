@@ -1,6 +1,9 @@
+import sys
 import os
+import logging
 from pydantic_settings import BaseSettings
 from app.schemas.app import LogLevel
+from loguru import logger
 
 
 class Settings(BaseSettings):
@@ -28,3 +31,15 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+logger.remove(0)
+logger.add(sys.stderr, level=settings.log_level)
+
+
+# Filter out /health endpoint
+class EndpointFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.getMessage().find("/health") == -1
+
+
+logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
